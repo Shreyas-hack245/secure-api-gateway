@@ -1,0 +1,28 @@
+{
+  "name": "secure-api-gateway",
+  "version": "1.0.0",
+  "description": "Secure API Gateway with JWT, Rate Limiting &amp; DDoS Protection",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shreyas-hack245/secure-api-gateway.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Shreyas-hack245/secure-api-gateway/issues"
+  },
+  "homepage": "https://github.com/Shreyas-hack245/secure-api-gateway#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.4.1",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1"
+  }
+}
