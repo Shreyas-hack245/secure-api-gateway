@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(morgan("combined")); 
 
 app.get("/", (req, res) => {
-  res.send("🚀 Secure API Gateway Running");
+  res.send(" Secure API Gateway Running");
 });
 
 app.use(ddosProtection);
