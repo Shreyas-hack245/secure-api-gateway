@@ -8,14 +8,12 @@ const ddosProtection = require("./middleware/ddosProtection");
 const app = express();
 
 app.use(express.json());
-app.use(morgan("combined")); // logging
+app.use(morgan("combined")); 
 
-// Home route
 app.get("/", (req, res) => {
   res.send("🚀 Secure API Gateway Running");
 });
 
-// Apply security layers
 app.use(ddosProtection);
 app.use("/api", limiter);
 app.use("/api", apiRoutes);
