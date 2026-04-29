@@ -4,7 +4,6 @@ const authenticate = require("../middleware/auth");
 
 const router = express.Router();
 
-// 🔑 Login route
 router.post("/login", (req, res) => {
   const user = {
     id: 1,
@@ -16,9 +15,8 @@ router.post("/login", (req, res) => {
   res.json({ token });
 });
 
-// 🔒 Protected route
 router.get("/data", authenticate, (req, res) => {
-  res.send("🔒 Protected API Data");
+  res.send(" Protected API Data");
 });
 
 module.exports = router;
