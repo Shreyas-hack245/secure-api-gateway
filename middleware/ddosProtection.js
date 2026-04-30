@@ -1,4 +1,5 @@
 const logRequest = require("../utils/logger");
+const detectThreat = require("../utils/threatDetector");
 
 const requestCounts = {};
 const blockedIPs = new Map();
@@ -18,14 +19,17 @@ const ddosProtection = async (req, res, next) => {
 
     requestCounts[ip] = (requestCounts[ip] || 0) + 1;
 
-    if (requestCounts[ip] > 20) {
+    let status = detectThreat(req);
+
+    if (requestCounts[ip] > 20 || status !== "normal") {
       blockedIPs.set(ip, Date.now() + 5 * 60 * 1000);
-      await logRequest(req, "suspicious");
-    } else {
-      await logRequest(req, "normal");
+      status = status === "normal" ? "ddos" : status;
     }
+
+    await logRequest(req, status);
+
   } catch (error) {
-    console.log("DDoS middleware error:", error.message);
+    console.log(error.message);
   }
 
   next();
