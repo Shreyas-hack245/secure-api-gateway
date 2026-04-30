@@ -6,8 +6,15 @@ const blockedIPs = new Map();
 
 const ddosProtection = async (req, res, next) => {
   const ip = req.ip;
+  const endpoint = req.originalUrl;
 
   try {
+    // Allow monitoring endpoints even if blocked
+    if (endpoint.includes("/logs") || endpoint.includes("/stats")) {
+      return next();
+    }
+
+    // Check if IP is blocked
     if (blockedIPs.has(ip)) {
       if (Date.now() < blockedIPs.get(ip)) {
         await logRequest(req, "blocked");
@@ -17,11 +24,18 @@ const ddosProtection = async (req, res, next) => {
       }
     }
 
+    // Count requests
     requestCounts[ip] = (requestCounts[ip] || 0) + 1;
 
+    // Detect behavior-based threat
     let status = detectThreat(req);
 
-    if (requestCounts[ip] > 20 || status !== "normal") {
+    // Apply blocking only for real threats
+    if (
+      requestCounts[ip] > 20 ||
+      status === "brute-force" ||
+      status === "endpoint-abuse"
+    ) {
       blockedIPs.set(ip, Date.now() + 5 * 60 * 1000);
       status = status === "normal" ? "ddos" : status;
     }
@@ -29,12 +43,13 @@ const ddosProtection = async (req, res, next) => {
     await logRequest(req, status);
 
   } catch (error) {
-    console.log(error.message);
+    console.log("DDoS middleware error:", error.message);
   }
 
   next();
 };
 
+// Reset counters every minute
 setInterval(() => {
   for (let ip in requestCounts) {
     requestCounts[ip] = 0;
