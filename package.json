@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Shreyas-hack245/secure-api-gateway#readme",
   "dependencies": {
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.4.1",
     "jsonwebtoken": "^9.0.3",
