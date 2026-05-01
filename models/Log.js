@@ -5,10 +5,8 @@ const logSchema = new mongoose.Schema({
   endpoint: String,
   method: String,
   status: String,
-  timestamp: {
-    type: Date,
-    default: Date.now
-  }
+  country: String,
+  timestamp: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model("Log", logSchema);
