@@ -3,7 +3,7 @@ const geoip = require("geoip-lite");
 
 const logRequest = async (req, status) => {
   try {
-    const ip = req.ip === "::1" ? "8.8.8.8" : req.ip; // fix for local testing
+    const ip = req.ip === "::1" ? "8.8.8.8" : req.ip; 
     const geo = geoip.lookup(ip);
 
     await Log.create({
