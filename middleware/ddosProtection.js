@@ -9,12 +9,10 @@ const ddosProtection = async (req, res, next) => {
   const endpoint = req.originalUrl;
 
   try {
-    // Allow monitoring endpoints
     if (endpoint.includes("/logs") || endpoint.includes("/stats")) {
       return next();
     }
 
-    // Check if IP is blocked
     if (blockedIPs.has(ip)) {
       if (Date.now() < blockedIPs.get(ip)) {
         await logRequest(req, "blocked");
@@ -24,18 +22,14 @@ const ddosProtection = async (req, res, next) => {
       }
     }
 
-    // Count requests
     requestCounts[ip] = (requestCounts[ip] || 0) + 1;
 
-    // Detect threat using scoring system
     let status = detectThreat(req);
 
-    // Trigger alerts
     if (status !== "normal") {
       console.log(`ALERT: ${status} detected from ${ip}`);
     }
 
-    // Blocking logic (improved)
     if (
       requestCounts[ip] > 25 || 
       status === "high-risk"
@@ -53,7 +47,6 @@ const ddosProtection = async (req, res, next) => {
   next();
 };
 
-// Reset counters every minute
 setInterval(() => {
   for (let ip in requestCounts) {
     requestCounts[ip] = 0;
