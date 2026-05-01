@@ -7,15 +7,15 @@ const detectThreat = (req) => {
 
   threatScore[ip] = threatScore[ip] || 0;
 
-  // Base traffic
+  
   threatScore[ip] += 1;
 
-  // Login attempts
+
   if (endpoint.includes("/login")) {
     threatScore[ip] += 5;
   }
 
-  // Endpoint abuse
+ 
   const key = ip + endpoint;
   endpointHits[key] = (endpointHits[key] || 0) + 1;
 
@@ -23,7 +23,7 @@ const detectThreat = (req) => {
     threatScore[ip] += 15;
   }
 
-  // High risk detection
+
   if (threatScore[ip] > 50) {
     return "high-risk";
   }
@@ -31,7 +31,7 @@ const detectThreat = (req) => {
   return "normal";
 };
 
-// Reset every minute
+
 setInterval(() => {
   for (let ip in threatScore) threatScore[ip] = 0;
   for (let key in endpointHits) endpointHits[key] = 0;
