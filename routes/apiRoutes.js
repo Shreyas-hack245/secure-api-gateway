@@ -7,7 +7,6 @@ const Log = require("../models/Log");
 
 const router = express.Router();
 
-// LOGIN
 router.post("/login", (req, res) => {
   const user = {
     id: 1,
@@ -22,23 +21,18 @@ router.post("/login", (req, res) => {
   res.json({ token });
 });
 
-// PROTECTED DATA
 router.get("/data", authenticate, (req, res) => {
   res.send("Protected data");
 });
 
-// ADMIN ROUTE
 router.get("/admin", authenticate, roleCheck("admin"), (req, res) => {
   res.send("Admin access");
 });
 
-// STATS
 router.get("/stats", async (req, res) => {
   try {
     const total = await Log.countDocuments();
-
     const blocked = await Log.countDocuments({ status: "blocked" });
-
     const suspicious = await Log.countDocuments({
       status: { $in: ["ddos", "high-risk", "brute-force", "endpoint-abuse"] }
     });
@@ -53,7 +47,6 @@ router.get("/stats", async (req, res) => {
   }
 });
 
-// LOGS
 router.get("/logs", async (req, res) => {
   try {
     const logs = await Log.find().sort({ timestamp: -1 }).limit(50);
@@ -63,7 +56,6 @@ router.get("/logs", async (req, res) => {
   }
 });
 
-// 🔥 TOP ATTACKERS (NEW FEATURE)
 router.get("/top-attackers", async (req, res) => {
   try {
     const attackers = await Log.aggregate([
