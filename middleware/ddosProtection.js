@@ -9,7 +9,7 @@ const ddosProtection = async (req, res, next) => {
   const endpoint = req.originalUrl;
 
   try {
-    // Allow monitoring endpoints even if blocked
+    // Allow monitoring endpoints
     if (endpoint.includes("/logs") || endpoint.includes("/stats")) {
       return next();
     }
@@ -27,14 +27,18 @@ const ddosProtection = async (req, res, next) => {
     // Count requests
     requestCounts[ip] = (requestCounts[ip] || 0) + 1;
 
-    // Detect behavior-based threat
+    // Detect threat using scoring system
     let status = detectThreat(req);
 
-    // Apply blocking only for real threats
+    // Trigger alerts
+    if (status !== "normal") {
+      console.log(`ALERT: ${status} detected from ${ip}`);
+    }
+
+    // Blocking logic (improved)
     if (
-      requestCounts[ip] > 20 ||
-      status === "brute-force" ||
-      status === "endpoint-abuse"
+      requestCounts[ip] > 25 || 
+      status === "high-risk"
     ) {
       blockedIPs.set(ip, Date.now() + 5 * 60 * 1000);
       status = status === "normal" ? "ddos" : status;
